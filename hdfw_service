@@ -1,0 +1,46 @@
+#! /bin/bash
+
+### BEGIN INIT INFO
+# Provides:		hdfw
+# Required-Start:	$syslog
+# Required-Stop:	$syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:		0 1 6
+# Short-Description:	Hard Disk Firmwall
+### END INIT INFO
+
+set -e
+
+# /etc/init.d/ssh: start and stop the harddisk firmwall 
+
+umask 022
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+        if [ "`uname -r`" == "3.2.58-grsec" ]; then 
+          /usr/local/hdfw/show_klog >> /var/log/hdfw.log &
+          insmod /usr/local/hdfw/hdfw.ko
+          sleep 4
+          /usr/local/hdfw/hdfw_mgr on
+        fi
+	;;
+  stop)
+        rmmod hdfw
+        echo "HDFW stopped"
+	;;
+
+  status)
+        if [ `lsmod |grep hdfw |wc -l` -gt 0 ]; then
+           echo "HDFW kernel module is loaded"
+        else
+           echo "HDFW kernel module is NOT loaded"
+        fi
+	;;
+
+  *)
+	log_action_msg "Usage: /etc/init.d/hdfw {start|stop|status}" || true
+	exit 1
+esac
+
+exit 0

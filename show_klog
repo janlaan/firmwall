@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Time::HiRes qw(usleep);
+
+my $timestamp;
+my $lasttime = 0;
+my $iterations = 0;
+
+while (1) {
+  open(DMESG, "/bin/dmesg |tail -n 10 |") or die $!;
+  while(<DMESG>) {
+    next if ! m/HDFW/;
+    ( $timestamp ) = ( $_ =~ m/\[\s*(.*?)\]/ );
+    if ( $lasttime < $timestamp ) {
+      $lasttime = $timestamp;
+      my ( $line ) = ( $_ =~ m/HDFW\]\s(.*)/ );
+      if ($iterations > 0 ) {
+        my $time = `date +%F' '%T`;
+        chomp($time);
+        print "$time | $line\n";
+        if ( $line =~ m/HDFW:\sUnloaded/i ) {
+          print "$time |--------------------------------------------------------------------\n";
+        }
+      }
+    }
+  }
+  close(DMESG);
+  $iterations++;
+  usleep(200000);
+}

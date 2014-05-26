@@ -1,0 +1,47 @@
+          .-==[ Hard Disk FirmWall ]==-.
+         /                              \
+________/  J.Laan & N.v.Dijkhuizen 2014  \__________
+|                                                   |
+| HDFW is a proof-of-concept tool that should block |
+| unrequested hard disk firmware changes / upgrades |
+|---------------------------------------------------|
+|                                                   |
+| This code was made for the cource "Offensive Tech-|
+| nologies" at System and Network Engineering at the|
+| University of Amsterdam.                          |
+|---------------------------------------------------|
+|                                                   |
+| The risk of any and all loss, damage, or unsatis- |
+| factory performance of this software or program   |
+| rests with you as the user.                       |
+|___________________________________________________|
+
+_____________________________________________________
+|                                                    |
+| Installation instructions:                         |
+|                                                    |
+|   manually fix the value 0xffffffff8155d200        |
+|   in hdfw.c to match your kernel (grep             |
+|   sys_call_table /boot/System.map-`uname -r`       |   
+|                                                    |
+|   Also match the `uname -r` output in hdfw_service |
+|                                                    |
+|   # make                                           |
+|   # mkdir /usr/local/hdfw                          |
+|   # cp ./hdfw.ko /usr/local/hdfw                   | 
+|   # cp ./hdfw_mgr /usr/local/hdfw                  |
+|   # cp ./show_klog /usr/local/hdfw                 |
+|   # cp ./hdfw_service /etc/init.d                  |
+|   # chkconfig -a hdfw_service                      |
+|                                                    |
+| Instruction of operation:                          | 
+|                                                    |
+|   load module:               insmod hdfw.ko        |
+|                                                    |
+|   enable monitoring:         hdfw_mgr on           |_
+|   disable monitoring:        hdfw_mgr off            |
+|   enable times monitoring:   hdfw_mgr [seconds]      |
+|   add binary to whitelist:   hdfw_mgr wl.add [proc]  |
+|   del binary from whitelist: hdfw_mgr wl.del [proc]  |
+|   list whitelisted procs:    hdfw_mgr wl.list        |
+|______________________________________________________|

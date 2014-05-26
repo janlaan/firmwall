@@ -1,0 +1,33 @@
+#
+# HDFW: Loadable Linux kernel module for monitoring and blocking suspicious hard drive activity.
+#       This is the Prelude-LML ruleset beloning to HDFW.
+#
+# HDFW Copyright (C) 2014 Jan Laan, Niels van Dijkhuizen
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+regex=Intercepted: ioctl\([0-9]+, 0x[0-9]+\) from PID ([0-9]+), exe: (.*); \
+ classification.text=Denied ioctl access; \
+ id=901; \
+ revision=1; \
+ analyzer(0).name=HDFW; \
+ analyzer(0).manufacturer=http://www.os3.nl; \
+ analyzer(0).class=Integrity; \
+ assessment.impact.severity=high; \
+ assessment.impact.completion=failed; \
+ assessment.impact.type=file; \
+ assessment.impact.description=Process ID $1 ($2) tried to access a storage device via ioctl; \
+ source(0).process.name=$2; \
+ source(0).process.pid=$1; \
+ last;
